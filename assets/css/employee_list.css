@@ -1,0 +1,235 @@
+.employee-list-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+/* Page Header */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.header-left h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.header-left h2 i {
+    color: #3498db;
+    margin-right: 10px;
+}
+
+.header-left p {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Filters */
+.filters-card {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.filters-form {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.search-input, .filter-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    font-size: 13px;
+}
+
+.search-input:focus, .filter-select:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+.btn-filter {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 13px;
+    width: 100%;
+}
+
+.btn-filter:hover {
+    background: #2980b9;
+}
+
+.btn-reset {
+    display: block;
+    text-align: center;
+    background: #ecf0f1;
+    color: #333;
+    padding: 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+.btn-reset:hover {
+    background: #bdc3c7;
+}
+
+/* Employee Table */
+.employee-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.employee-table th {
+    text-align: left;
+    padding: 15px 12px;
+    background: #f8f9fa;
+    font-size: 13px;
+    color: #666;
+    font-weight: 600;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.employee-table td {
+    padding: 15px 12px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 13px;
+    color: #333;
+}
+
+.employee-table tr:hover td {
+    background: #f5f5f5;
+}
+
+.employee-id {
+    font-family: monospace;
+    font-weight: 600;
+    color: #3498db;
+}
+
+.employee-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.name-avatar {
+    width: 35px;
+    height: 35px;
+    background: #3498db;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.employee-name small {
+    color: #999;
+    font-size: 11px;
+}
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.status-regular {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-probationary {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-contractual {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.action-btn.view {
+    background: #3498db;
+}
+
+.action-btn.edit {
+    background: #f39c12;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+.no-data {
+    text-align: center;
+    padding: 30px;
+    color: #999;
+    font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .filters-form {
+        flex-direction: column;
+    }
+    
+    .filter-group {
+        width: 100%;
+    }
+    
+    .employee-table {
+        display: block;
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+}

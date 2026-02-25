@@ -4,29 +4,40 @@ document.addEventListener('DOMContentLoaded', function() {
     if (form) {
         const password = document.getElementById('password');
         const confirmPassword = document.getElementById('confirm_password');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        // Password requirements elements
+        const reqLength = document.getElementById('req-length');
+        const reqUppercase = document.getElementById('req-uppercase');
+        const reqLowercase = document.getElementById('req-lowercase');
+        const reqNumber = document.getElementById('req-number');
+        const reqSpecial = document.getElementById('req-special');
+        const passwordMatch = document.getElementById('password-match');
         
         function checkPasswordStrength() {
             const value = password.value;
-            const requirements = {
-                length: value.length >= 8,
-                uppercase: /[A-Z]/.test(value),
-                lowercase: /[a-z]/.test(value),
-                number: /[0-9]/.test(value),
-                special: /[!@#$%^&*(),.?":{}|<>]/.test(value)
-            };
             
-            // You can add visual feedback here
-            const strength = Object.values(requirements).filter(Boolean).length;
+            // Check requirements
+            const hasLength = value.length >= 8;
+            const hasUppercase = /[A-Z]/.test(value);
+            const hasLowercase = /[a-z]/.test(value);
+            const hasNumber = /[0-9]/.test(value);
+            const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(value);
             
-            // Simple border color based on strength
-            if (value.length > 0) {
-                if (strength < 3) {
-                    password.style.borderColor = '#ff4444';
-                } else if (strength < 5) {
-                    password.style.borderColor = '#ffbb33';
-                } else {
-                    password.style.borderColor = '#00C851';
-                }
+            // Update requirement indicators
+            updateRequirement(reqLength, hasLength);
+            updateRequirement(reqUppercase, hasUppercase);
+            updateRequirement(reqLowercase, hasLowercase);
+            updateRequirement(reqNumber, hasNumber);
+            updateRequirement(reqSpecial, hasSpecial);
+            
+            return hasLength && hasUppercase && hasLowercase && hasNumber && hasSpecial;
+        }
+        
+        function updateRequirement(element, met) {
+            if (element) {
+                element.style.color = met ? '#00C851' : '#ff4444';
+                element.style.textDecoration = met ? 'line-through' : 'none';
             }
         }
         
@@ -34,23 +45,40 @@ document.addEventListener('DOMContentLoaded', function() {
             if (confirmPassword.value.length > 0) {
                 if (password.value !== confirmPassword.value) {
                     confirmPassword.style.borderColor = '#ff4444';
+                    if (passwordMatch) {
+                        passwordMatch.textContent = 'Passwords do not match';
+                        passwordMatch.style.color = '#ff4444';
+                    }
                     return false;
                 } else {
                     confirmPassword.style.borderColor = '#00C851';
+                    if (passwordMatch) {
+                        passwordMatch.textContent = 'Passwords match';
+                        passwordMatch.style.color = '#00C851';
+                    }
                     return true;
                 }
+            } else {
+                confirmPassword.style.borderColor = '#e0e0e0';
+                if (passwordMatch) {
+                    passwordMatch.textContent = '';
+                }
+                return false;
             }
-            return true;
         }
         
-        password.addEventListener('keyup', function() {
-            checkPasswordStrength();
-            if (confirmPassword.value.length > 0) {
-                checkPasswordMatch();
+        function validateForm() {
+            const isStrong = checkPasswordStrength();
+            const doMatch = checkPasswordMatch();
+            const hasValue = password.value.length > 0 && confirmPassword.value.length > 0;
+            
+            if (submitBtn) {
+                submitBtn.disabled = !(isStrong && doMatch && hasValue);
             }
-        });
+        }
         
-        confirmPassword.addEventListener('keyup', checkPasswordMatch);
+        password.addEventListener('keyup', validateForm);
+        confirmPassword.addEventListener('keyup', validateForm);
         
         form.addEventListener('submit', function(e) {
             const newPassword = password.value;
@@ -101,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Show loading state
             const submitBtn = document.querySelector('.btn-reset');
-            submitBtn.textContent = 'Resetting...';
+            submitBtn.textContent = 'Resetting Password...';
             submitBtn.disabled = true;
         });
     }

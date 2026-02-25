@@ -16,10 +16,15 @@ $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $functions = new UserFunctions();
-    $result = $functions->sendPasswordResetCode($_POST['email']);
+    $username = trim($_POST['username'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    
+    $result = $functions->verifyUserAndSendCode($username, $email);
     
     if ($result['success']) {
-        $success = $result['message'];
+        // Redirect to verify code page
+        header("Location: verify_code.php");
+        exit();
     } else {
         $error = $result['message'];
     }
@@ -37,10 +42,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container">
         <div class="forgot-container">
             <div class="logo">
+                <img src="assets/images/hr-logo.png" alt="<?php echo SITE_NAME; ?>" class="logo-image">
                 <h1><?php echo SITE_NAME; ?></h1>
             </div>
             <h2>Forgot Password</h2>
-            <p class="instruction">Enter your email address and we'll send you a link to reset your password.</p>
+            <p class="instruction">Enter your username and email address to receive a verification code.</p>
             
             <?php if ($error): ?>
                 <div class="error-message"><?php echo htmlspecialchars($error); ?></div>
@@ -52,11 +58,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             <form method="POST" action="" id="forgotForm" autocomplete="off">
                 <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" placeholder="Enter your registered email" required>
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" 
+                           value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>" 
+                           placeholder="Enter your username" required>
                 </div>
                 
-                <button type="submit" class="btn-submit">Send Reset Link</button>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" 
+                           value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" 
+                           placeholder="Enter your registered email" required>
+                    <small style="display: block; color: #666; font-size: 12px; margin-top: 5px;">Must match the email associated with your account</small>
+                </div>
+                
+                <button type="submit" class="btn-submit">Send Verification Code</button>
             </form>
             
             <div class="links">
