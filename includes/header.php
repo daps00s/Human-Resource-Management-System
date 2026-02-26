@@ -44,7 +44,20 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             <li><a href="employee_list.php"><i class="fas fa-circle"></i> Employee List</a></li>
                             <li><a href="add_employee.php"><i class="fas fa-circle"></i> Add Employee</a></li>
                             <li><a href="employee_profile.php"><i class="fas fa-circle"></i> Employee Profile</a></li>
-                            <li><a href="offices.php"><i class="fas fa-circle"></i> Offices</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Office Management -->
+                    <li class="nav-item has-submenu">
+                        <a href="#" class="nav-link submenu-toggle">
+                            <i class="fas fa-users"></i>
+                            <span>Office Management</span>
+                            <i class="fas fa-chevron-right submenu-icon"></i>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="Offices.php"><i class="fas fa-circle"></i> Offices</a></li>
+                            <li><a href="add_employee.php"><i class="fas fa-circle"></i> Positions </a></li>
+                            <li><a href="add_employee.php"><i class="fas fa-circle"></i> Plantila </a></li>
                         </ul>
                     </li>
 
