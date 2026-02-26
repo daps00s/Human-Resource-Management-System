@@ -667,3 +667,102 @@ body {
         right: -30px;
     }
 }
+
+/* Add these styles to your existing header.css */
+
+/* Active state for submenu links */
+.submenu li a.active {
+    background: #3498db;
+    color: #fff !important;
+}
+
+.submenu li a.active i {
+    color: #fff !important;
+}
+
+/* Hover effects for better interactivity */
+.nav-link, .submenu li a, .logout-btn {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Smooth transitions for submenu */
+.submenu {
+    transition: all 0.3s ease;
+}
+
+/* Focus states for accessibility */
+.nav-link:focus, .submenu li a:focus, .logout-btn:focus {
+    outline: 2px solid #3498db;
+    outline-offset: -2px;
+}
+
+/* Prevent text selection on double click */
+.nav-link, .submenu li a, .logout-btn {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Loading state for navigation */
+.nav-link.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.nav-link.loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Improved mobile interactions */
+@media (max-width: 1024px) {
+    .nav-link, .submenu li a {
+        padding: 15px 20px; /* Larger touch target */
+    }
+    
+    .submenu li a {
+        padding-left: 50px;
+    }
+}
+
+/* Keyboard navigation indicator */
+.nav-link:focus-visible, .submenu li a:focus-visible {
+    outline: 2px solid #3498db;
+    outline-offset: -2px;
+}
+
+/* Smooth page transitions */
+.main-content {
+    transition: margin-left 0.3s ease, opacity 0.3s ease;
+}
+
+/* Active page indicator */
+.nav-item.active > .nav-link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: #fff;
+}
+
+.submenu li a.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: #fff;
+}
+
+/* Relative positioning for active indicators */
+.nav-link, .submenu li a {
+    position: relative;
+    
+}
