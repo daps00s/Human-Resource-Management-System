@@ -208,70 +208,8 @@ $lgu_positions = [
             'Driver I',
             'Admin Aide IV'
         ]
-    ],
-    'A-8' => [
-        'title' => 'Annex A-8: Tourism & Culture',
-        'description' => 'Tourism Office and Cultural Affairs',
-        'icon' => 'fas fa-umbrella-beach',
-        'color' => '#f39c12',
-        'positions' => [
-            'Senior Tourism Operations Officer',
-            'Tourism Operations Officer I',
-            'Administrative Aide III'
-        ]
-    ],
-    'A-9' => [
-        'title' => 'Annex A-9: Library & Information',
-        'description' => 'Library Services and Information',
-        'icon' => 'fas fa-book',
-        'color' => '#2c3e50',
-        'positions' => [
-            'Librarian II',
-            'Administrative Aide VI',
-            'Administrative Aide III'
-        ]
-    ],
-    'A-10' => [
-        'title' => 'Annex A-10: Civil Registry',
-        'description' => 'Office of the Municipal Civil Registrar',
-        'icon' => 'fas fa-file-signature',
-        'color' => '#7f8c8d',
-        'positions' => [
-            'Municipal Civil Registrar',
-            'Registration Officer I',
-            'Assistant Registration Officer',
-            'Administrative Aide IV',
-            'Administrative Aide III',
-            'Administrative Aide VI'
-        ]
-    ],
-    'A-11' => [
-        'title' => 'Annex A-11: Market & Public Services',
-        'description' => 'Public Market and Services',
-        'icon' => 'fas fa-store',
-        'color' => '#d35400',
-        'positions' => [
-            'Market Supervisor I',
-            'Market Inspector II',
-            'Revenue Collection Clerk III',
-            'Revenue Collection Clerk II',
-            'Administrative Assistant II',
-            'Administrative Aide III',
-            'Administrative Aide I',
-            'Watchman I'
-        ]
-    ],
-    'A-12' => [
-        'title' => 'Annex A-12: Labor & Employment',
-        'description' => 'Labor and Employment Services',
-        'icon' => 'fas fa-briefcase',
-        'color' => '#c0392b',
-        'positions' => [
-            'Supervising Labor and Employment Officer',
-            'Senior Labor and Employment Officer',
-            'Labor and Employment Assistant'
-        ]
     ]
+
 ];
 
 $current_annex = $lgu_positions[$selected_annex];
