@@ -572,3 +572,97 @@
         text-align: center;
     }
 }
+
+/* Add to your existing employee_profile.css */
+
+.personal-summary {
+    margin-bottom: 25px;
+}
+
+.full-width {
+    grid-column: span 2;
+}
+
+.profile-avatar-large img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.badge-warning {
+    background: #f39c12;
+    color: white;
+}
+
+.performance-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #f0f0f0;
+}
+
+.performance-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.performance-rating {
+    font-size: 32px;
+    font-weight: 700;
+    color: #3498db;
+    margin-bottom: 5px;
+}
+
+.performance-period {
+    color: #666;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.pending-case {
+    background: #fbe9e7;
+    color: #e74c3c;
+    padding: 8px;
+    border-radius: 5px;
+    font-size: 13px;
+    margin-top: 10px;
+}
+
+.no-data {
+    text-align: center;
+    color: #999;
+    padding: 20px;
+    font-style: italic;
+}
+
+.service-info {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 2px solid #f0f0f0;
+}
+
+.service-info h4 {
+    font-size: 15px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .full-width {
+        grid-column: span 1;
+    }
+    
+    .profile-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .profile-actions .btn-primary,
+    .profile-actions .btn-secondary {
+        width: 100%;
+        text-align: center;
+    }
+}

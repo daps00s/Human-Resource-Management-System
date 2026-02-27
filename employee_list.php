@@ -12,9 +12,11 @@ $db = getDB();
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $office = isset($_GET['office']) ? $_GET['office'] : '';
 $status = isset($_GET['status']) ? $_GET['status'] : '';
+$employment_status = isset($_GET['employment_status']) ? $_GET['employment_status'] : '';
 
 // Build query
-$query = "SELECT u.*, o.office_name, es.status_name 
+$query = "SELECT u.*, o.office_name, es.status_name,
+          ee.position, ee.employment_status_id
           FROM users u 
           LEFT JOIN employee_employment ee ON u.id = ee.user_id
           LEFT JOIN offices o ON ee.office_id = o.id
@@ -22,13 +24,17 @@ $query = "SELECT u.*, o.office_name, es.status_name
           WHERE u.role = 'employee'";
 
 if (!empty($search)) {
-    $query .= " AND (u.first_name LIKE '%$search%' OR u.last_name LIKE '%$search%' OR u.employee_id LIKE '%$search%')";
+    $query .= " AND (u.first_name LIKE '%$search%' OR u.last_name LIKE '%$search%' 
+               OR u.middle_name LIKE '%$search%' OR u.employee_id LIKE '%$search%')";
 }
 if (!empty($office)) {
     $query .= " AND o.id = $office";
 }
 if (!empty($status)) {
     $query .= " AND ee.employment_status_id = $status";
+}
+if (!empty($employment_status)) {
+    $query .= " AND u.employment_status = '$employment_status'";
 }
 
 $query .= " ORDER BY u.last_name ASC";
@@ -75,12 +81,21 @@ include 'includes/header.php';
             </div>
             <div class="filter-group">
                 <select name="status" class="filter-select">
-                    <option value="">All Status</option>
+                    <option value="">All Employment Status</option>
                     <?php while($stat = $statuses->fetch_assoc()): ?>
                     <option value="<?php echo $stat['id']; ?>" <?php echo $status == $stat['id'] ? 'selected' : ''; ?>>
                         <?php echo htmlspecialchars($stat['status_name']); ?>
                     </option>
                     <?php endwhile; ?>
+                </select>
+            </div>
+            <div class="filter-group">
+                <select name="employment_status" class="filter-select">
+                    <option value="">All Status</option>
+                    <option value="Active" <?php echo $employment_status == 'Active' ? 'selected' : ''; ?>>Active</option>
+                    <option value="Retired" <?php echo $employment_status == 'Retired' ? 'selected' : ''; ?>>Retired</option>
+                    <option value="Resigned" <?php echo $employment_status == 'Resigned' ? 'selected' : ''; ?>>Resigned</option>
+                    <option value="Deceased" <?php echo $employment_status == 'Deceased' ? 'selected' : ''; ?>>Deceased</option>
                 </select>
             </div>
             <div class="filter-group">
@@ -96,12 +111,13 @@ include 'includes/header.php';
             <table class="employee-table">
                 <thead>
                     <tr>
+                        <th>Photo</th>
                         <th>Employee ID</th>
                         <th>Name</th>
                         <th>Office/Department</th>
                         <th>Position</th>
                         <th>Status</th>
-                        <th>Email</th>
+                        <th>Contact</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -109,12 +125,20 @@ include 'includes/header.php';
                     <?php if ($result->num_rows > 0): ?>
                         <?php while($emp = $result->fetch_assoc()): ?>
                         <tr>
+                            <td>
+                                <div class="employee-photo">
+                                    <?php if (!empty($emp['profile_picture'])): ?>
+                                        <img src="uploads/profiles/<?php echo $emp['profile_picture']; ?>" alt="Profile">
+                                    <?php else: ?>
+                                        <div class="photo-placeholder">
+                                            <?php echo strtoupper(substr($emp['first_name'] ?? $emp['username'], 0, 1)); ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </td>
                             <td><span class="employee-id"><?php echo htmlspecialchars($emp['employee_id'] ?? 'N/A'); ?></span></td>
                             <td>
                                 <div class="employee-name">
-                                    <div class="name-avatar">
-                                        <?php echo strtoupper(substr($emp['first_name'] ?? $emp['username'], 0, 1)); ?>
-                                    </div>
                                     <div>
                                         <div><?php echo htmlspecialchars($emp['first_name'] . ' ' . $emp['last_name']); ?></div>
                                         <small><?php echo htmlspecialchars($emp['username']); ?></small>
@@ -127,8 +151,15 @@ include 'includes/header.php';
                                 <span class="status-badge status-<?php echo strtolower($emp['status_name'] ?? 'regular'); ?>">
                                     <?php echo htmlspecialchars($emp['status_name'] ?? 'Regular'); ?>
                                 </span>
+                                <br>
+                                <small class="emp-status-<?php echo strtolower($emp['employment_status'] ?? 'active'); ?>">
+                                    <?php echo $emp['employment_status'] ?? 'Active'; ?>
+                                </small>
                             </td>
-                            <td><?php echo htmlspecialchars($emp['email']); ?></td>
+                            <td>
+                                <div><?php echo htmlspecialchars($emp['contact_number'] ?? 'N/A'); ?></div>
+                                <small><?php echo htmlspecialchars($emp['email']); ?></small>
+                            </td>
                             <td>
                                 <div class="action-buttons">
                                     <a href="employee_profile.php?id=<?php echo $emp['id']; ?>" class="action-btn view" title="View Profile">
@@ -143,7 +174,7 @@ include 'includes/header.php';
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="7" class="no-data">No employees found</td>
+                            <td colspan="8" class="no-data">No employees found</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

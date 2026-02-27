@@ -7,36 +7,15 @@ $auth = new AuthCheck();
 $auth->requireLogin();
 
 $db = getDB();
+$error = '';
+$success = '';
 
-// Handle add/edit/delete
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['add_office'])) {
-        $office_code = $_POST['office_code'];
-        $office_name = $_POST['office_name'];
-        $office_head = $_POST['office_head'];
-        $location = $_POST['location'];
-        $contact_number = $_POST['contact_number'];
-        $email = $_POST['email'];
-        
-        $db->query("INSERT INTO offices (office_code, office_name, office_head, location, contact_number, email) 
-                   VALUES ('$office_code', '$office_name', '$office_head', '$location', '$contact_number', '$email')");
-    } elseif (isset($_POST['edit_office'])) {
-        $id = $_POST['id'];
-        $office_code = $_POST['office_code'];
-        $office_name = $_POST['office_name'];
-        $office_head = $_POST['office_head'];
-        $location = $_POST['location'];
-        $contact_number = $_POST['contact_number'];
-        $email = $_POST['email'];
-        $status = $_POST['status'];
-        
-        $db->query("UPDATE offices SET office_code='$office_code', office_name='$office_name', 
-                   office_head='$office_head', location='$location', contact_number='$contact_number', 
-                   email='$email', status='$status' WHERE id=$id");
-    } elseif (isset($_POST['delete_office'])) {
-        $id = $_POST['id'];
-        $db->query("DELETE FROM offices WHERE id=$id");
-    }
+// Handle status messages from other pages
+if (isset($_GET['success'])) {
+    $success = $_GET['success'];
+}
+if (isset($_GET['error'])) {
+    $error = $_GET['error'];
 }
 
 $offices = $db->query("SELECT * FROM offices ORDER BY office_name");
@@ -46,12 +25,23 @@ include 'includes/header.php';
 <link rel="stylesheet" href="assets/css/offices.css">
 
 <div class="offices-container">
-    <div class="page-header">
+<div class="page-header">
+    <div class="header-left">
         <h2><i class="fas fa-building"></i> Offices/Departments</h2>
-        <button class="btn-primary" onclick="showAddModal()">
-            <i class="fas fa-plus"></i> Add Office
-        </button>
+        <p>Manage all offices and departments in the organization</p>
     </div>
+    <a href="add_office.php" class="btn-primary">
+        <i class="fas fa-plus"></i> Add New Office
+    </a>
+</div>
+
+    <?php if ($error): ?>
+        <div class="alert alert-error"><?php echo htmlspecialchars($error); ?></div>
+    <?php endif; ?>
+    
+    <?php if ($success): ?>
+        <div class="alert alert-success"><?php echo htmlspecialchars($success); ?></div>
+    <?php endif; ?>
 
     <!-- Offices Table -->
     <div class="card">
@@ -59,6 +49,7 @@ include 'includes/header.php';
             <table class="offices-table">
                 <thead>
                     <tr>
+                        <th>Logo</th>
                         <th>Code</th>
                         <th>Office Name</th>
                         <th>Office Head</th>
@@ -70,101 +61,109 @@ include 'includes/header.php';
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while($off = $offices->fetch_assoc()): ?>
-                    <tr>
-                        <td><span class="office-code"><?php echo htmlspecialchars($off['office_code']); ?></span></td>
-                        <td><?php echo htmlspecialchars($off['office_name']); ?></td>
-                        <td><?php echo htmlspecialchars($off['office_head'] ?? 'N/A'); ?></td>
-                        <td><?php echo htmlspecialchars($off['location'] ?? 'N/A'); ?></td>
-                        <td><?php echo htmlspecialchars($off['contact_number'] ?? 'N/A'); ?></td>
-                        <td><?php echo htmlspecialchars($off['email'] ?? 'N/A'); ?></td>
-                        <td>
-                            <span class="status-badge status-<?php echo $off['status']; ?>">
-                                <?php echo ucfirst($off['status']); ?>
-                            </span>
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="action-btn edit" onclick="editOffice(<?php echo $off['id']; ?>)">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="action-btn delete" onclick="deleteOffice(<?php echo $off['id']; ?>)">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <?php endwhile; ?>
+                    <?php if ($offices->num_rows > 0): ?>
+                        <?php while($off = $offices->fetch_assoc()): ?>
+                        <tr>
+                            <td>
+                                <div class="office-logo">
+                                    <?php if (!empty($off['logo'])): ?>
+                                        <img src="uploads/offices/<?php echo $off['logo']; ?>" alt="<?php echo $off['office_name']; ?>">
+                                    <?php else: ?>
+                                        <div class="logo-placeholder">
+                                            <?php echo strtoupper(substr($off['office_code'], 0, 2)); ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </td>
+                            <td><span class="office-code"><?php echo htmlspecialchars($off['office_code']); ?></span></td>
+                            <td><?php echo htmlspecialchars($off['office_name']); ?></td>
+                            <td><?php echo htmlspecialchars($off['office_head'] ?? 'N/A'); ?></td>
+                            <td><?php echo htmlspecialchars($off['location'] ?? 'N/A'); ?></td>
+                            <td><?php echo htmlspecialchars($off['contact_number'] ?? 'N/A'); ?></td>
+                            <td><?php echo htmlspecialchars($off['email'] ?? 'N/A'); ?></td>
+                            <td>
+                                <span class="status-badge status-<?php echo $off['status']; ?>">
+                                    <?php echo ucfirst($off['status']); ?>
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="view_office.php?id=<?php echo $off['id']; ?>" class="action-btn view" title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="edit_office.php?id=<?php echo $off['id']; ?>" class="action-btn edit" title="Edit Office">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <button class="action-btn delete" onclick="confirmDelete(<?php echo $off['id']; ?>)" title="Delete Office">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="9" class="no-data">No offices found. Click "Add New Office" to create one.</td>
+                        </tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
 
-<!-- Add Modal -->
-<div id="addModal" class="modal">
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="modal">
     <div class="modal-content">
-        <span class="close" onclick="closeAddModal()">&times;</span>
-        <h3>Add New Office</h3>
-        <form method="POST" action="">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-header">
+            <i class="fas fa-exclamation-triangle" style="color: #e74c3c; font-size: 48px;"></i>
+            <h3>Confirm Deletion</h3>
+        </div>
+        <p>Are you sure you want to delete this office?</p>
+        <p class="warning-text">This action cannot be undone. All associated data will be permanently removed.</p>
+        <p>Type <strong>"confirm"</strong> in the box below to proceed with deletion.</p>
+        <form action="delete_office.php" method="POST" id="deleteForm">
+            <input type="hidden" name="id" id="delete_id">
             <div class="form-group">
-                <label>Office Code</label>
-                <input type="text" name="office_code" required>
+                <input type="text" name="confirm_delete" id="confirm_delete" 
+                       placeholder="Type 'confirm' here" required 
+                       pattern="confirm" title="Please type 'confirm' exactly">
             </div>
-            <div class="form-group">
-                <label>Office Name</label>
-                <input type="text" name="office_name" required>
+            <div class="form-actions">
+                <button type="submit" name="delete_office" class="btn-danger">Delete Office</button>
+                <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
             </div>
-            <div class="form-group">
-                <label>Office Head</label>
-                <input type="text" name="office_head">
-            </div>
-            <div class="form-group">
-                <label>Location</label>
-                <input type="text" name="location">
-            </div>
-            <div class="form-group">
-                <label>Contact Number</label>
-                <input type="text" name="contact_number">
-            </div>
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" name="email">
-            </div>
-            <button type="submit" name="add_office" class="btn-primary">Save Office</button>
         </form>
     </div>
 </div>
 
 <script>
-function showAddModal() {
-    document.getElementById('addModal').style.display = 'block';
+function confirmDelete(id) {
+    document.getElementById('delete_id').value = id;
+    document.getElementById('confirm_delete').value = '';
+    document.getElementById('deleteModal').style.display = 'block';
 }
 
-function closeAddModal() {
-    document.getElementById('addModal').style.display = 'none';
-}
-
-function editOffice(id) {
-    // Implement edit functionality
-    alert('Edit office ' + id);
-}
-
-function deleteOffice(id) {
-    if (confirm('Are you sure you want to delete this office?')) {
-        var form = document.createElement('form');
-        form.method = 'POST';
-        form.innerHTML = '<input type="hidden" name="id" value="' + id + '"><input type="hidden" name="delete_office" value="1">';
-        document.body.appendChild(form);
-        form.submit();
-    }
+function closeModal() {
+    document.getElementById('deleteModal').style.display = 'none';
 }
 
 // Close modal when clicking outside
 window.onclick = function(event) {
-    var modal = document.getElementById('addModal');
+    const modal = document.getElementById('deleteModal');
     if (event.target == modal) {
         modal.style.display = 'none';
     }
 }
+
+// Auto-hide alerts after 5 seconds
+setTimeout(() => {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+        alert.style.transition = 'opacity 0.5s';
+        alert.style.opacity = '0';
+        setTimeout(() => alert.remove(), 500);
+    });
+}, 5000);
 </script>
